@@ -74,39 +74,39 @@ fun Header(modifier: Modifier = Modifier) {
 @Composable
 fun Content(modifier: Modifier = Modifier) {
 
-    var count by remember { mutableStateOf(0) }
-    var step by remember { mutableStateOf("lemon_tree") }
-    var randomNumber by remember { mutableStateOf((2..4).random()) }
+    var squeezeCount by remember { mutableStateOf(0) }
+    var currentStep by remember { mutableStateOf(0) }
 
-    fun updateCount() {
-        if (step === "lemon_squeeze" && count == randomNumber) {
-            step = "lemon_drink"
-            count = 0
-            randomNumber = (2..4).random()
-        } else if (step === "lemon_drink") {
-            step = "lemon_restart"
-        } else if (step === "lemon_restart") {
-            step = "lemon_tree"
-        } else if (step === "lemon_tree") {
-            step = "lemon_squeeze"
-        } else {
-            count++
-        }
-    }
-
-    val imageResource = when (step) {
-        "lemon_tree" -> R.drawable.lemon_tree
-        "lemon_squeeze" -> R.drawable.lemon_squeeze
-        "lemon_drink" -> R.drawable.lemon_drink
+    val imageResource = when (currentStep) {
+        0 -> R.drawable.lemon_tree
+        1 -> R.drawable.lemon_squeeze
+        2 -> R.drawable.lemon_drink
         else -> R.drawable.lemon_restart
     }
 
-    val description = when (step) {
-        "lemon_tree" -> stringResource(R.string.lemon_tree)
-        "lemon_squeeze" -> stringResource(R.string.lemon_squeeze)
-        "lemon_drink" -> stringResource(R.string.lemon_drink)
-        else -> stringResource(R.string.lemon_restart)
+    val description = when (currentStep) {
+        0 -> R.string.lemon_tree
+        1 -> R.string.lemon_squeeze
+        2 -> R.string.lemon_drink
+        else -> R.drawable.lemon_restart
     }
+
+    fun updateState() {
+        when (currentStep) {
+            0 -> {
+                currentStep++
+                squeezeCount = (2..4).random()
+            }
+            1 -> {
+                if (squeezeCount == 0) {
+                    currentStep++
+                } else squeezeCount--
+            }
+            2 -> currentStep++
+            else -> currentStep = 0
+        }
+    }
+
 
     Column(
         modifier = modifier.fillMaxSize(),
@@ -114,7 +114,7 @@ fun Content(modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.Center
     ) {
         Button(
-            onClick = { updateCount() },
+            onClick = { updateState() },
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color(0xFFD2E7DA)
             ),
@@ -123,12 +123,12 @@ fun Content(modifier: Modifier = Modifier) {
         ) {
             Image(
                 painter = painterResource(imageResource),
-                contentDescription = description,
+                contentDescription = stringResource(description),
             )
         }
         Spacer(modifier = Modifier.height(20.dp))
         Text(
-            text = description,
+            text = stringResource(description),
             fontSize = 18.sp,
             fontWeight = FontWeight.Medium
         )
