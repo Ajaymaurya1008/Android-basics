@@ -18,6 +18,7 @@ This repository contains all the code I wrote while learning **Android developme
 ## Note to self 
 
 - An Android app can have multiple activities. However, it is recommended to have a single activity
+- When we override the onCreate() method, we must call the superclass implementation to complete the creation of the Activity, so within it, you must immediately call super.onCreate(). The same is true for other lifecycle callback methods.
 
 ## 🎯 Purpose  
 This repository serves as a personal reference and a learning log for my **Android development journey**. Feel free to explore, learn, and contribute!  
